@@ -1,5 +1,8 @@
 # Software Studio Assignment 6
 
+## Member1: 102070028 周欣融
+   Member2: 102010012 林庭宇
+
 ## Notes
 + You will have to import the libraries on your own. All the libraries are provided on iLMS.
 + Even you followed the design TA shown in the video, you still have to explain the control of the program in the next section.
