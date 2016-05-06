@@ -19,6 +19,7 @@ public class MainApplet extends PApplet{
 							"starwars-episode-7-interactions.json"};
 	
 	private final static int width = 1200, height = 650;
+	private int centerX = width/2, centerY = height/2, bigCircleRadius = 400;
 	private ArrayList<Character> characters;
 	private int[] characterNum = new int[8];
 	
@@ -37,31 +38,73 @@ public class MainApplet extends PApplet{
 		textSize(30);
 		text("Star Wars",width/2-70, 30);
 		
-		// big circle
-		strokeWeight(4);
-		stroke(132, 219, 0);
-		fill(0,0);
-		ellipse(width/2, height/2, 400, 400);
+		// big circle with hovering effect 
+		if(inBigCircle()){
+			strokeWeight(10);
+			stroke(132, 219, 0);
+			fill(0,0);
+			ellipse(width/2, height/2, 400, 400);
+		}
+		else{
+			strokeWeight(4);
+			stroke(132, 219, 0);
+			fill(0,0);
+			ellipse(width/2, height/2, 400, 400);
+		}
 		
-		// button ADD ALL
-		fill(2, 202, 119, 255);
-		stroke(0, 0);
-		rect(width*3/4, 40, 150, 50);
+		// button ADD ALL with hovering effect
+		if(inButton(width*3/4, 40)){
+			fill(2, 202, 119, 200);
+			stroke(0, 0);
+			rect(width*3/4, 40, 150, 50);
+		}
+		else{
+			fill(2, 202, 119, 255);
+			stroke(0, 0);
+			rect(width*3/4, 40, 150, 50);
+		}
 		fill(255,255);
 		textSize(20);
 		text("ADD ALL",width*3/4+30, 70);
 		
-		// button CLEAR
-		fill(2, 202, 119, 255);
-		rect(width*3/4, 140, 150, 50);
+		
+		// button CLEAR with hovering effect
+		if(inButton(width*3/4, 140)){
+			fill(2, 202, 119, 200);
+			rect(width*3/4, 140, 150, 50);
+		}
+		else{
+			fill(2, 202, 119, 255);
+			rect(width*3/4, 140, 150, 50);
+		}
 		fill(255,255);
 		textSize(20);
 		text("CLEAR",width*3/4+40, 170);
 		
+		
 		for(i=this.characterNum[0]; i<this.characterNum[1]; i++){
 			characters.get(i).display();
+			characters.get(i).drag();
 		}
 	}
+	
+	private boolean inBigCircle(){
+		if(sqrt(sq(centerX - mouseX) + sq(centerY - mouseY)) < bigCircleRadius/2 ) {	
+			return true;
+		} 
+		else{
+			return false;
+		}
+	}
+	
+	private boolean inButton(int x, int y){
+		int w = 150, h = 50;
+		if(mouseX > x - w && mouseX < x + w && mouseY > y - h && mouseY < y + h){
+			return true;
+		}
+		return false;
+	}
+
 	
 	/* Change episode */
 	public void keyPressed(){
@@ -88,7 +131,24 @@ public class MainApplet extends PApplet{
 		}
 	}
 	
-
+	
+	public void mousePressed(){
+		for(int i=this.characterNum[0]; i<this.characterNum[1]; i++){
+			characters.get(i).clicked();
+		}
+	}
+	
+	public void mouseDragged(){
+		
+	}
+	
+	public void mouseReleased(){
+		for(int i=this.characterNum[0]; i<this.characterNum[1]; i++){
+			characters.get(i).stopDraging();
+		}
+		
+	}
+	
 	private void loadData(){
 		JSONArray nodes, links;
 		JSONObject data, tmp;

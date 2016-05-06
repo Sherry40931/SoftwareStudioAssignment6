@@ -11,12 +11,14 @@ import processing.core.PApplet;
 public class Character {
 	
 	public float x, y, radius=40;
+	private float xMove=0, yMove=0;
 	private String name;
 	private PApplet parent;
 	private int value;
 	private int[] color = new int[3];
 	private ArrayList<Character> targets = new ArrayList<Character>();
 	private boolean showName;
+	public boolean draging=false;
 	
 	/*
 	 * Store these variables when instance created.
@@ -41,38 +43,58 @@ public class Character {
 	 * Use display() to draw the character on the sketch.
 	 */
 	public void display(){
-		update();
+		overCircle();
 		this.parent.fill(this.color[0], this.color[1], this.color[2], 180);
 		this.parent.stroke(0, 0);
 		this.parent.ellipse(x, y, radius, radius);
 		
 		if(showName){
+			// show name
 			this.parent.fill(2, 202, 119, 255);
 			this.parent.rect(x, y+5, 120, 20);
 			this.parent.fill(255, 255);
 			this.parent.textSize(14);
 			this.parent.text(this.name,x+20,y+20);
+			// be bigger
+			this.radius = 45;
+		}
+		else{
+			this.radius = 40;
 		}
 //		this.parent.fill(0);
 	}
 	
-	boolean overCircle(float x, float y, float diameter) {
-		  float disX = x - this.parent.mouseX;
-		  float disY = y - this.parent.mouseY;
-		  if(PApplet.sqrt(PApplet.sq(disX) + PApplet.sq(disY)) < diameter/2 ) {
-		    return true;
-		  } else {
-		    return false;
-		 }
+	public boolean overCircle() {		
+		if(PApplet.sqrt(PApplet.sq(this.x - this.parent.mouseX) + PApplet.sq(this.y - this.parent.mouseY)) < this.radius/2 ) {	
+			showName = true;
+			return true;
+		} 
+		else{
+			showName = false;
+			return false;
+		}
 	}
 	
-	void update() {
-		  if(overCircle(this.x, this.y, this.radius) ) {
-		    showName = true;
-		  }
-		  else{
-			 showName = false;
-		  }
+	public void clicked(){
+		if(overCircle()){
+			xMove = this.x - this.parent.mouseX;
+			yMove = this.y - this.parent.mouseY;
+			draging = true;
+		}
+		else{
+			draging = false;
+		}
+	}
+	
+	public void stopDraging(){
+		draging = false;
+	}
+	
+	public void drag(){
+		if(draging){
+			this.x = this.parent.mouseX + xMove;
+			this.y = this.parent.mouseY + yMove;
+		}
 	}
 	
 	/*
