@@ -3,6 +3,7 @@ package main.java;
 import java.util.ArrayList;
 
 import processing.core.PApplet;
+import processing.core.PConstants;
 
 /**
 * This class is used to store states of the characters in the program.
@@ -17,8 +18,10 @@ public class Character {
 	private int value;
 	private int[] color = new int[3];
 	private ArrayList<Character> targets = new ArrayList<Character>();
-	private boolean showName;
+	private ArrayList<Integer> values = new ArrayList<Integer>();
+	private boolean showName, isInCircle=false;
 	public boolean draging=false;
+	private int centerX = 1200/2, centerY = 650/2, bigCircleRadius = 400;
 	
 	/*
 	 * Store these variables when instance created.
@@ -97,11 +100,34 @@ public class Character {
 		}
 	}
 	
+	public void drawConnections(ArrayList<Character> inCircleNode){
+//		for(int i=0; i<inCircleNode.size(); i++){
+//			System.out.println(inCircleNode.get(i).name);
+//		}
+		for(int i=0; i<inCircleNode.size(); i++){
+			if(targets.contains(inCircleNode.get(i)) && this.isInCircle){
+				int targetIndex = targets.indexOf(inCircleNode.get(i));
+				float targetX = inCircleNode.get(i).x;
+				float targetY = inCircleNode.get(i).y;
+				
+				this.parent.strokeWeight(values.get(targetIndex));
+				this.parent.stroke(0, 150);
+				this.parent.noFill();
+				this.parent.bezier(x, y, (this.centerX+x)/2, (this.centerY+y)/2, (this.centerX+targetX)/2, (this.centerY+targetY)/2, targetX, targetY);
+			}
+		}
+	}
+	
+	public void setInCricle(boolean condition){
+		this.isInCircle = condition;
+	}
+	
 	/*
 	 * Add the target to the array list when loading file.
 	 */
-	public void addTarget(Character target, int value){
+	public void addTarget(Character target, int nodeValue){
 		targets.add(target);
+		values.add(nodeValue);
 	}
 	
 	public ArrayList<Character> getTargets(){
