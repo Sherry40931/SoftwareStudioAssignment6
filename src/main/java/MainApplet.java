@@ -22,6 +22,7 @@ public class MainApplet extends PApplet{
 	private int centerX = width/2, centerY = height/2, bigCircleRadius = 400;
 	private ArrayList<Character> characters;
 	private int[] characterNum = new int[8];
+	private int mouseClickingOneNum;
 	
 	public void setup() {
 		size(width, height);
@@ -88,7 +89,18 @@ public class MainApplet extends PApplet{
 		}
 	}
 	
-	private boolean inBigCircle(){
+	public int[] getBigCircleCenter(){
+		int[] centerPos = new int[2];
+		centerPos[0] = this.centerX;
+		centerPos[1] = this.centerY;
+		return centerPos;
+	}
+	
+	public int getBigCircleRadius(){
+		return this.bigCircleRadius;
+	}
+	
+	public boolean inBigCircle(){
 		if(sqrt(sq(centerX - mouseX) + sq(centerY - mouseY)) < bigCircleRadius/2 ) {	
 			return true;
 		} 
@@ -133,20 +145,26 @@ public class MainApplet extends PApplet{
 	
 	
 	public void mousePressed(){
+		mouseClickingOneNum = 0;
+		
 		for(int i=this.characterNum[0]; i<this.characterNum[1]; i++){
-			characters.get(i).clicked();
+			//characters.get(i).clicked();
+			if(characters.get(i).overCircle()){
+				mouseClickingOneNum = i;
+				break;
+			}
 		}
+		
+		characters.get(mouseClickingOneNum).clicked();
 	}
 	
 	public void mouseDragged(){
-		
+	
 	}
 	
 	public void mouseReleased(){
-		for(int i=this.characterNum[0]; i<this.characterNum[1]; i++){
-			characters.get(i).stopDraging();
-		}
-		
+		characters.get(mouseClickingOneNum).stopDraging();
+		mouseClickingOneNum = 0;
 	}
 	
 	private void loadData(){

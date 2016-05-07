@@ -10,10 +10,10 @@ import processing.core.PApplet;
 */
 public class Character {
 	
-	public float x, y, radius=40;
+	public float x, y, originalX, originalY, radius=40;
 	private float xMove=0, yMove=0;
 	private String name;
-	private PApplet parent;
+	private MainApplet parent;
 	private int value;
 	private int[] color = new int[3];
 	private ArrayList<Character> targets = new ArrayList<Character>();
@@ -23,11 +23,13 @@ public class Character {
 	/*
 	 * Store these variables when instance created.
 	 */
-	public Character(PApplet parent, String name, float x, float y, int value, String color){
+	public Character(MainApplet parent, String name, float x, float y, int value, String color){
 		this.parent = parent;
 		this.name = name;
 		this.x = x;
 		this.y = y;
+		this.originalX = this.x;
+		this.originalY = this.y;
 		this.value = value;
 		this.color = convertHexColor(color);
 	}
@@ -61,6 +63,7 @@ public class Character {
 		else{
 			this.radius = 40;
 		}
+		
 //		this.parent.fill(0);
 	}
 	
@@ -88,6 +91,17 @@ public class Character {
 	
 	public void stopDraging(){
 		draging = false;
+		if(this.parent.inBigCircle()){
+			int[] centerPos = this.parent.getBigCircleCenter();
+			int bigCircleRadius = this.parent.getBigCircleRadius();
+			
+			this.x = centerPos[0] + bigCircleRadius/2;
+			this.y = centerPos[1] - PApplet.sqrt(PApplet.sq(bigCircleRadius/2) - PApplet.sq(this.x-centerPos[0]));
+		}
+		else{
+			this.x = this.originalX;
+			this.y = this.originalY;
+		}
 	}
 	
 	public void drag(){
