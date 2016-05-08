@@ -18,12 +18,16 @@ public class Character {
 	private int[] color = new int[3];
 	private ArrayList<Character> targets = new ArrayList<Character>();
 	private boolean showName;
+	private ArrayList<Integer> values = new ArrayList<Integer>();
+	private boolean showName, isInCircle=false;
 	public boolean draging=false;
+	private int centerX = 1200/2, centerY = 650/2, bigCircleRadius = 400;
 	
 	/*
 	 * Store these variables when instance created.
 	 */
 	public Character(MainApplet parent, String name, float x, float y, int value, String color){
+	public Character(PApplet parent, String name, float x, float y, int value, String color){
 		this.parent = parent;
 		this.name = name;
 		this.x = x;
@@ -111,11 +115,35 @@ public class Character {
 		}
 	}
 	
+	public void drawConnections(ArrayList<Character> inCircleNode){
+//		for(int i=0; i<targets.size(); i++){
+//			System.out.println(targets.get(i).name);
+//		}
+		for(int i=0; i<inCircleNode.size(); i++){
+			if(targets.contains(inCircleNode.get(i)) && this.isInCircle){
+				
+				int targetIndex = targets.indexOf((inCircleNode.get(i)));
+				float targetX = inCircleNode.get(i).x;
+				float targetY = inCircleNode.get(i).y;
+				
+				this.parent.strokeWeight(PApplet.ceil(values.get(targetIndex)));
+				this.parent.stroke(0, 150);
+				this.parent.noFill();
+				this.parent.bezier(x, y, (this.centerX+x)/2, (this.centerY+y)/2, (this.centerX+targetX)/2, (this.centerY+targetY)/2, targetX, targetY);
+			}
+		}
+	}
+	
+	public void setInCricle(boolean condition){
+		this.isInCircle = condition;
+	}
+	
 	/*
 	 * Add the target to the array list when loading file.
 	 */
-	public void addTarget(Character target, int value){
+	public void addTarget(Character target, int nodeValue){
 		targets.add(target);
+		values.add(nodeValue);
 	}
 	
 	public ArrayList<Character> getTargets(){
