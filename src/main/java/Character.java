@@ -10,7 +10,8 @@ import processing.core.PApplet;
 */
 public class Character {
 	
-	public float x, y, originalX, originalY, radius=40;
+	public float x, y, radius=40;
+	public
 	private float xMove=0, yMove=0;
 	private String name;
 	private PApplet parent;
@@ -21,15 +22,11 @@ public class Character {
 	private boolean showName, isInCircle=false;
 	public boolean draging=false;
 	private int centerX = 1200/2, centerY = 650/2, bigCircleRadius = 400;
-	
-	
 	public Character(PApplet parent, String name, float x, float y, int value, String color){
 		this.parent = parent;
 		this.name = name;
 		this.x = x;
 		this.y = y;
-		this.originalX = this.x;
-		this.originalY = this.y;
 		this.value = value;
 		this.color = convertHexColor(color);
 	}
@@ -92,7 +89,6 @@ public class Character {
 	
 	public void stopDraging(){
 		draging = false;
-		
 	}
 	
 	//function to implement the drag motion

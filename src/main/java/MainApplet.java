@@ -15,9 +15,15 @@ public class MainApplet extends PApplet{
 	private final static int width = 1200, height = 650;
 	private int centerX = width/2, centerY = height/2, bigCircleRadius = 400;
 	private ArrayList<Character> characters;
+
+	private int[] characterNum = new int[8];
+	private ArrayList<Character> inCircleNodes;  
+	private int curEpisode=1;
+
 	private int[] characterNum = new int[8];	//an array storing the character number from each episode
 	private ArrayList<Character> inCircleNodes;  //an arraylist recording which characters are in the big circle 
 	private int curEpisode=1, mousePointOnCharNum = -1, mousePressOnCharNum = -1;
+
 	private boolean allIn=false;
 	
 	public void setup() {
@@ -90,12 +96,24 @@ public class MainApplet extends PApplet{
 		textSize(20);
 		text("CLEAR",width*3/4+40, 170);
 		
+<<<<<<< HEAD
+		
+		for(i=this.characterNum[this.curEpisode-1]; i<this.characterNum[this.curEpisode]; i++){
+=======
 		//display all characters and find the one mouse pointing on, then show its name
 		//also if the character is in the big circle, draw its link to another character in the big circle
 		for(int i=this.characterNum[this.curEpisode-1]; i<this.characterNum[this.curEpisode]; i++){
+>>>>>>> 45a484632591f0da4e215117921e553de1bb26b0
 			characters.get(i).display();
 			if(characters.get(i).overCircle()) mousePointOnCharNum = i;
 			characters.get(i).drag();
+<<<<<<< HEAD
+			characters.get(i).drawConnections(inCircleNodes);
+			
+		}
+	}
+	
+=======
 			if(characters.get(i).isCharInCircle()) characters.get(i).drawConnections(inCircleNodes);
 		}
 		if(mousePointOnCharNum >= 0){
@@ -105,6 +123,7 @@ public class MainApplet extends PApplet{
 	}
 	
 	//function to tell if the mouse is in the big circle, if so we made a hover effect
+>>>>>>> 45a484632591f0da4e215117921e553de1bb26b0
 	private boolean inBigCircle(){
 		if(sqrt(sq(centerX - mouseX) + sq(centerY - mouseY)) < bigCircleRadius/2 ) {	
 			return true;
@@ -122,6 +141,35 @@ public class MainApplet extends PApplet{
 		}
 		return false;
 	}
+<<<<<<< HEAD
+	
+	public void reset(){
+		int originalX=40, originalY=40;
+		this.inCircleNodes.clear();
+		this.allIn = false;
+		for(int i=this.characterNum[this.curEpisode-1]; i<this.characterNum[this.curEpisode]; i++){
+			this.characters.get(i).x = originalX;
+			this.characters.get(i).y = originalY;
+			this.characters.get(i).setInCricle(false);
+			originalX += 60;
+			// next line
+			if(originalX >= 240){
+				originalY += 60;
+				originalX = 40;
+			}
+		}
+	}
+	
+	public void addAll(){
+		for(int i=this.characterNum[this.curEpisode-1]; i<this.characterNum[this.curEpisode]; i++){
+			this.inCircleNodes.add(this.characters.get(i));
+			characters.get(i).setInCricle(true);
+		}
+		this.allIn = true;
+	}
+
+=======
+>>>>>>> 45a484632591f0da4e215117921e553de1bb26b0
 	
 	//function to reset all characters in big circle to the original place and clear the inCircleNodes arraylist
 	public void reset(){
@@ -178,11 +226,17 @@ public class MainApplet extends PApplet{
 	
 	//if user press the mouse, the function tell where the mouse is pressed and the corresponding motion
 	public void mousePressed(){
+<<<<<<< HEAD
+		for(int i=this.characterNum[this.curEpisode-1]; i<this.characterNum[this.curEpisode]; i++){
+			characters.get(i).clicked();
+		}
+=======
 		mousePressOnCharNum = -1;
 		for(int i=this.characterNum[this.curEpisode-1]; i<this.characterNum[this.curEpisode]; i++){
 			if(characters.get(i).overCircle())mousePressOnCharNum = i;
 		}
 		if(mousePressOnCharNum >= 0) characters.get(mousePressOnCharNum).clicked();
+>>>>>>> 45a484632591f0da4e215117921e553de1bb26b0
 		
 		// button CLEAR
 		if(inButton(width*3/4, 140)){
@@ -204,6 +258,23 @@ public class MainApplet extends PApplet{
 		float[] vertX = new float[100];
 		float[] vertY = new float[100];
 		
+<<<<<<< HEAD
+		// drag into circle
+		for(i=this.characterNum[this.curEpisode-1]; i<this.characterNum[this.curEpisode]; i++){
+			if(characters.get(i).draging){
+				if(inBigCircle()){
+					if(!inCircleNodes.contains(characters.get(i))){	// avoid double add
+						inCircleNodes.add(characters.get(i));
+						characters.get(i).setInCricle(true);
+					}
+				}
+				else{
+					if(inCircleNodes.contains(characters.get(i))){	// avoid null exception
+						inCircleNodes.remove(inCircleNodes.indexOf(characters.get(i)));
+						characters.get(i).setInCricle(false);
+					}
+				}
+=======
 		if(mousePressOnCharNum >= 0 && characters.get(mousePressOnCharNum).draging){
 			if(inBigCircle()){		//if release in the big circle
 				if(!inCircleNodes.contains(characters.get(mousePressOnCharNum))){	// avoid double add
@@ -218,6 +289,7 @@ public class MainApplet extends PApplet{
 					characters.get(mousePressOnCharNum).setInCricle(false);
 				}
 				characters.get(mousePressOnCharNum).returnOriginalPlace();
+>>>>>>> 45a484632591f0da4e215117921e553de1bb26b0
 			}
 		}
 		
@@ -225,7 +297,11 @@ public class MainApplet extends PApplet{
 			this.allIn = true;
 		}
 		
+<<<<<<< HEAD
+		///////  animation in circle  ///////
+=======
 		//  animation in circle  
+>>>>>>> 45a484632591f0da4e215117921e553de1bb26b0
 		angle[0] = 0;
 		vertX[0] = this.bigCircleRadius/2;
 		vertY[0] = 0;
@@ -241,7 +317,15 @@ public class MainApplet extends PApplet{
 			inCircleNodes.get(i).y = vertY[i] + this.centerY;
 		}
 		
+<<<<<<< HEAD
+		
+		for(i=this.characterNum[this.curEpisode-1]; i<this.characterNum[this.curEpisode]; i++){
+			characters.get(i).stopDraging();
+			
+		}
+=======
 		if(mousePressOnCharNum >= 0) characters.get(mousePressOnCharNum).stopDraging();
+>>>>>>> 45a484632591f0da4e215117921e553de1bb26b0
 		
 	}
 	
