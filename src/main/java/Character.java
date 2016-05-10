@@ -23,9 +23,13 @@ public class Character {
 	public boolean draging=false;
 	private int centerX = 1200/2, centerY = 650/2, bigCircleRadius = 400;
 	
+<<<<<<< HEAD
 	/*
 	 * Store these variables when instance created.
 	 */
+=======
+	
+>>>>>>> 45a484632591f0da4e215117921e553de1bb26b0
 	public Character(PApplet parent, String name, float x, float y, int value, String color){
 		this.parent = parent;
 		this.name = name;
@@ -35,6 +39,7 @@ public class Character {
 		this.color = convertHexColor(color);
 	}
 	
+	//tool function to convert hex to rgb color notation
 	private int[] convertHexColor(String color){
 		int[] colorRGB = new int[3]; 
 		colorRGB[0] = Integer.valueOf(color.substring(3, 4), 16)*255/16;
@@ -42,14 +47,14 @@ public class Character {
 		colorRGB[2] = Integer.valueOf(color.substring(7, 8), 16)*255/16;
 		return colorRGB;
 	}
-	/*
-	 * Use display() to draw the character on the sketch.
-	 */
+	
+	//display the spot of this character
 	public void display(){
 		overCircle();
 		this.parent.fill(this.color[0], this.color[1], this.color[2], 180);
 		this.parent.stroke(0, 0);
 		this.parent.ellipse(x, y, radius, radius);
+<<<<<<< HEAD
 		
 		if(showName){
 			// show name
@@ -64,8 +69,27 @@ public class Character {
 		else{
 			this.radius = 40;
 		}
+=======
+>>>>>>> 45a484632591f0da4e215117921e553de1bb26b0
 	}
 	
+	//display its name
+	public void displayName(){
+		int nameLength = this.name.length();
+		this.parent.fill(this.color[0], this.color[1], this.color[2]);
+		this.parent.rect(x, y+5, nameLength*10 + 10, 20, 10);
+		this.parent.fill(255);
+		this.parent.textSize(14);
+		this.parent.text(this.name,x+10,y+20);
+		this.radius = 45;
+	}
+	
+	public void returnOriginalPlace() {
+		this.x = this.originalX;
+		this.y = this.originalY;
+	}
+	
+	//function to determine whether the mouse in over the character spot
 	public boolean overCircle() {		
 		if(PApplet.sqrt(PApplet.sq(this.x - this.parent.mouseX) + PApplet.sq(this.y - this.parent.mouseY)) < this.radius/2 ) {	
 			showName = true;
@@ -90,8 +114,13 @@ public class Character {
 	
 	public void stopDraging(){
 		draging = false;
+<<<<<<< HEAD
+=======
+		
+>>>>>>> 45a484632591f0da4e215117921e553de1bb26b0
 	}
 	
+	//function to implement the drag motion
 	public void drag(){
 		if(draging){
 			this.x = this.parent.mouseX + xMove;
@@ -100,9 +129,6 @@ public class Character {
 	}
 	
 	public void drawConnections(ArrayList<Character> inCircleNode){
-//		for(int i=0; i<targets.size(); i++){
-//			System.out.println(targets.get(i).name);
-//		}
 		for(int i=0; i<inCircleNode.size(); i++){
 			if(targets.contains(inCircleNode.get(i)) && this.isInCircle){
 				
@@ -122,9 +148,10 @@ public class Character {
 		this.isInCircle = condition;
 	}
 	
-	/*
-	 * Add the target to the array list when loading file.
-	 */
+	public boolean isCharInCircle(){
+		return isInCircle;
+	}
+	
 	public void addTarget(Character target, int nodeValue){
 		targets.add(target);
 		values.add(nodeValue);
