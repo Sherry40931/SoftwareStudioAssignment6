@@ -49,6 +49,7 @@ public class Character {
 		this.parent.fill(this.color[0], this.color[1], this.color[2], 180);
 		this.parent.stroke(0, 0);
 		this.parent.ellipse(x, y, radius, radius);
+		this.radius = 40;
 	}
 	
 	//display its name
