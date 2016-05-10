@@ -1,9 +1,6 @@
 package main.java;
 
 import java.util.ArrayList;
-
-import org.w3c.dom.Node;
-
 import processing.core.PApplet;
 import processing.data.JSONArray;
 import processing.data.JSONObject;
@@ -24,13 +21,14 @@ public class MainApplet extends PApplet{
 	private int centerX = width/2, centerY = height/2, bigCircleRadius = 400;
 	private ArrayList<Character> characters;
 	private int[] characterNum = new int[8];
-	private ArrayList<Character> count;  
+	private ArrayList<Character> inCircleNodes;  
 	private int curEpisode=1;
+	private boolean allIn=false;
 	
 	public void setup() {
 		size(width, height);
 		characters = new ArrayList<Character>();
-		count = new ArrayList<Character>();
+		inCircleNodes = new ArrayList<Character>();
 		characterNum[0] = 0;
 		smooth();
 		loadData();
@@ -42,7 +40,7 @@ public class MainApplet extends PApplet{
 		// title
 		textSize(30);
 		fill(10,150);
-		text("Star Wars",width/2-70, 30);
+		text("Star Wars "+this.curEpisode,width/2-70, 30);
 		
 		// big circle with hovering effect 
 		stroke(132, 219, 0);
@@ -102,8 +100,7 @@ public class MainApplet extends PApplet{
 		for(i=this.characterNum[this.curEpisode-1]; i<this.characterNum[this.curEpisode]; i++){
 			characters.get(i).display();
 			characters.get(i).drag();
-			
-			characters.get(i).drawConnections(count);
+			characters.get(i).drawConnections(inCircleNodes);
 			
 		}
 	}
@@ -124,37 +121,81 @@ public class MainApplet extends PApplet{
 		}
 		return false;
 	}
+	
+	public void reset(){
+		int originalX=40, originalY=40;
+		this.inCircleNodes.clear();
+		this.allIn = false;
+		for(int i=this.characterNum[this.curEpisode-1]; i<this.characterNum[this.curEpisode]; i++){
+			this.characters.get(i).x = originalX;
+			this.characters.get(i).y = originalY;
+			this.characters.get(i).setInCricle(false);
+			originalX += 60;
+			// next line
+			if(originalX >= 240){
+				originalY += 60;
+				originalX = 40;
+			}
+		}
+	}
+	
+	public void addAll(){
+		for(int i=this.characterNum[this.curEpisode-1]; i<this.characterNum[this.curEpisode]; i++){
+			this.inCircleNodes.add(this.characters.get(i));
+			characters.get(i).setInCricle(true);
+		}
+		this.allIn = true;
+	}
 
 	
 	/* Change episode */
 	public void keyPressed(){
 		if(key == '1'){
 			this.curEpisode = 1;
+			reset();
 		}
 		else if(key == '2'){
 			this.curEpisode = 2;
+			reset();
 		}
 		else if(key == '3'){
 			this.curEpisode = 3;
+			reset();
 		}
 		else if(key == '4'){
 			this.curEpisode = 4;
+			reset();
 		}
 		else if(key == '5'){
 			this.curEpisode = 5;
+			reset();
 		}
 		else if(key == '6'){
 			this.curEpisode = 6;
+			reset();
 		}
 		else if(key == '7'){
 			this.curEpisode = 7;
+			reset();
 		}
 	}
 	
 	
 	public void mousePressed(){
-		for(int i=this.characterNum[0]; i<this.characterNum[1]; i++){
+		for(int i=this.characterNum[this.curEpisode-1]; i<this.characterNum[this.curEpisode]; i++){
 			characters.get(i).clicked();
+		}
+		
+		// button CLEAR
+		if(inButton(width*3/4, 140)){
+			reset();
+		}
+		
+		// button ADD ALL
+		if(inButton(width*3/4, 40)){
+			if(!this.allIn){	// avoid exception
+				addAll();
+			}
 		}
 	}
 	
@@ -165,21 +206,25 @@ public class MainApplet extends PApplet{
 		float[] vertY = new float[100];
 		
 		// drag into circle
-		for(i=this.characterNum[0]; i<this.characterNum[1]; i++){
+		for(i=this.characterNum[this.curEpisode-1]; i<this.characterNum[this.curEpisode]; i++){
 			if(characters.get(i).draging){
 				if(inBigCircle()){
-					if(!count.contains(characters.get(i))){	// avoid double add
-						count.add(characters.get(i));
+					if(!inCircleNodes.contains(characters.get(i))){	// avoid double add
+						inCircleNodes.add(characters.get(i));
 						characters.get(i).setInCricle(true);
 					}
 				}
 				else{
-					if(count.contains(characters.get(i))){	// avoid null exception
-						count.remove(count.indexOf(characters.get(i)));
+					if(inCircleNodes.contains(characters.get(i))){	// avoid null exception
+						inCircleNodes.remove(inCircleNodes.indexOf(characters.get(i)));
 						characters.get(i).setInCricle(false);
 					}
 				}
 			}
+		}
+		
+		if(this.inCircleNodes.size() == this.characterNum[this.curEpisode] - this.characterNum[this.curEpisode-1]){
+			this.allIn = true;
 		}
 		
 		///////  animation in circle  ///////
@@ -187,20 +232,21 @@ public class MainApplet extends PApplet{
 		vertX[0] = this.bigCircleRadius/2;
 		vertY[0] = 0;
 		// build circle position
-		for(i=1; i<count.size(); i++){
-			angle[i] =(float) ((float)angle[i-1] + 2*PI/count.size());
+		for(i=1; i<inCircleNodes.size(); i++){
+			angle[i] =(float) ((float)angle[i-1] + 2*PI/inCircleNodes.size());
 			vertX[i] = cos(angle[i])*this.bigCircleRadius/2;
 			vertY[i] = sin(angle[i])*this.bigCircleRadius/2;
 		}
 		// map nodes to positions
-		for(i=0; i<count.size(); i++){
-			count.get(i).x = vertX[i] + this.centerX; 
-			count.get(i).y = vertY[i] + this.centerY;
+		for(i=0; i<inCircleNodes.size(); i++){
+			inCircleNodes.get(i).x = vertX[i] + this.centerX; 
+			inCircleNodes.get(i).y = vertY[i] + this.centerY;
 		}
 		
 		
-		for(i=this.characterNum[0]; i<this.characterNum[1]; i++){
+		for(i=this.characterNum[this.curEpisode-1]; i<this.characterNum[this.curEpisode]; i++){
 			characters.get(i).stopDraging();
+			
 		}
 		
 	}
@@ -236,11 +282,11 @@ public class MainApplet extends PApplet{
 			}
 			for(i=0; i<links.size(); i++){
 				tmp = links.getJSONObject(i);
-				int s = tmp.getInt("source");
-				int t = tmp.getInt("target");
+				int s = tmp.getInt("source") + this.characterNum[episode-1];
+				int t = tmp.getInt("target") + this.characterNum[episode-1];
 				int v = tmp.getInt("value");
 				if(v > 10){
-					v = 10;
+					v = v/4;
 				}
 				characters.get(s).addTarget(characters.get(t), v);
 			}

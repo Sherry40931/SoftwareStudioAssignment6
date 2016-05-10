@@ -3,7 +3,6 @@ package main.java;
 import java.util.ArrayList;
 
 import processing.core.PApplet;
-import processing.core.PConstants;
 
 /**
 * This class is used to store states of the characters in the program.
@@ -12,6 +11,7 @@ import processing.core.PConstants;
 public class Character {
 	
 	public float x, y, radius=40;
+	public
 	private float xMove=0, yMove=0;
 	private String name;
 	private PApplet parent;
@@ -64,7 +64,6 @@ public class Character {
 		else{
 			this.radius = 40;
 		}
-//		this.parent.fill(0);
 	}
 	
 	public boolean overCircle() {		
@@ -101,16 +100,17 @@ public class Character {
 	}
 	
 	public void drawConnections(ArrayList<Character> inCircleNode){
-//		for(int i=0; i<inCircleNode.size(); i++){
-//			System.out.println(inCircleNode.get(i).name);
+//		for(int i=0; i<targets.size(); i++){
+//			System.out.println(targets.get(i).name);
 //		}
 		for(int i=0; i<inCircleNode.size(); i++){
 			if(targets.contains(inCircleNode.get(i)) && this.isInCircle){
-				int targetIndex = targets.indexOf(inCircleNode.get(i));
+				
+				int targetIndex = targets.indexOf((inCircleNode.get(i)));
 				float targetX = inCircleNode.get(i).x;
 				float targetY = inCircleNode.get(i).y;
 				
-				this.parent.strokeWeight(values.get(targetIndex));
+				this.parent.strokeWeight(PApplet.ceil(values.get(targetIndex)));
 				this.parent.stroke(0, 150);
 				this.parent.noFill();
 				this.parent.bezier(x, y, (this.centerX+x)/2, (this.centerY+y)/2, (this.centerX+targetX)/2, (this.centerY+targetY)/2, targetX, targetY);
